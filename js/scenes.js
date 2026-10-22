@@ -435,7 +435,7 @@
       box(2.2, 0.22, 1, '#e8463c', 0, 0.45, 0, sled);
       box(2.4, 0.08, 0.08, '#ffd400', 0, 0.15, -0.4, sled);
       box(2.4, 0.08, 0.08, '#ffd400', 0, 0.15, 0.4, sled);
-      sled.position.set(-4.6, 0, 4.2);
+      sled.position.set(-5.4, 0, 1.4);
       sled.rotation.y = 0.5;
       scene.add(sled);
       const peng = new T.Group();
@@ -446,19 +446,19 @@
       beak.rotation.x = Math.PI / 2;
       for (const dx of [-0.12, 0.12]) ball(0.05, '#ffffff', dx, 1.33, 0.27, peng);
       for (const dx of [-0.15, 0.15]) box(0.2, 0.06, 0.3, '#ff9a1f', dx, 0.03, 0.15, peng);
-      peng.position.set(5.6, 0, 3.6);
+      peng.position.set(5.6, 0, 1.2);
       peng.rotation.y = -0.4;
       scene.add(peng);
       for (let i = 0; i < 9; i++) {
-        const fp = box(0.22, 0.02, 0.34, '#b9cde8', 1.2 + i * 0.55 + (i % 2) * 0.1, 0.01, 6.2 - i * 0.7 + (i % 2) * 0.25);
+        const fp = box(0.22, 0.02, 0.34, '#a9c0e0', -0.6 + i * 0.5 + (i % 2) * 0.12, 0.01, 2.6 - i * 0.55 + (i % 2) * 0.22);
         fp.castShadow = false;
       }
-      for (const [x, z, s2] of [[-8.6, 3.5, 0.8], [8.8, 2.6, 0.9], [-9.8, -1, 1]]) {
+      for (const [x, z, s2] of [[-9.2, 0.6, 0.8], [9.4, -0.4, 0.9], [-10.4, -4, 1]]) {
         tree(x, z, s2, '#2f7d4a', 'pine');
         cone(0.45 * s2, 0.6 * s2, '#ffffff', x, 3.65 * s2, z, scene, 10);
       }
       const scarfC = ['#ff3d7f', '#18d4ff', '#ffd400'];
-      for (let i = 0; i < 3; i++) box(0.36, 0.5, 0.12, scarfC[i], -2.8 + i * 0.5, 0.25, 5.2 + (i % 2) * 0.2).rotation.y = i * 0.6; // mittens dropped in the snow
+      for (let i = 0; i < 3; i++) box(0.36, 0.5, 0.12, scarfC[i], -3.0 + i * 0.5, 0.25, 2.4 + (i % 2) * 0.2).rotation.y = i * 0.6; // mittens dropped in the snow
       // falling snow
       const flake = mat('#ffffff', { emissive: '#ffffff', emissiveIntensity: 0.4 });
       for (let i = 0; i < 90; i++) {

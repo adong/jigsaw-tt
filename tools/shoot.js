@@ -20,7 +20,7 @@ const prof = fs.mkdtempSync(path.join(require('os').tmpdir(), 'jigsawtt-chrome-'
 const chrome = spawn('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', [
   '--headless=new', `--remote-debugging-port=${port}`, `--user-data-dir=${prof}`, `--window-size=${W},${H}`,
   '--no-first-run', '--no-default-browser-check', '--enable-unsafe-swiftshader', '--use-angle=swiftshader', '--hide-scrollbars', 'about:blank',
-], { stdio: 'ignore' });
+], { stdio: 'ignore', detached: true }); // its own process group: a signal Chrome sends its group never reaches this shell
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const VK = { ArrowLeft: 37, ArrowUp: 38, ArrowRight: 39, ArrowDown: 40, Enter: 13, ' ': 32, Escape: 27, Tab: 9 };
 
