@@ -96,7 +96,7 @@
   /* ---------- home ---------- */
   #home { position: fixed; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(6px, 1.5vh, 16px); transition: opacity 0.3s; padding: 10px; }
   @media (min-aspect-ratio: 105/100) { #home { left: 47vw; right: max(8px, env(safe-area-inset-right)); top: 0; bottom: 0; } }
-  @media (max-aspect-ratio: 105/100) { #home { left: 0; right: 0; bottom: max(6px, env(safe-area-inset-bottom)); height: 63vh; justify-content: flex-start; padding-left: 62px; } }
+  @media (max-aspect-ratio: 105/100) { #home { left: 0; right: 0; bottom: max(6px, env(safe-area-inset-bottom)); height: 68vh; justify-content: flex-start; padding-left: 62px; } }
   .logo { text-align: center; font-family: var(--display); line-height: 0.92; transform: rotate(-3deg); }
   .logo small { display: block; font-size: clamp(26px, 5vmin, 44px); color: var(--cyan); -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; text-shadow: 0 4px 0 var(--ink); }
   .logo big { display: block; font-size: clamp(40px, 9vmin, 92px); color: var(--yellow); -webkit-text-stroke: 4px var(--ink); paint-order: stroke fill; text-shadow: 0 6px 0 var(--ink), 0 12px 24px rgba(0,0,0,.2); letter-spacing: 1px; }
@@ -128,9 +128,11 @@
   .duo img { width: clamp(40px, 6.4vmin, 56px); aspect-ratio: 1; border-radius: 13px; background: radial-gradient(circle at 50% 35%, #ffffff, #b9e6ff); }
   .duo .vs { color: var(--pink); }
   @media (max-width: 520px) {
-    .logo big { font-size: 40px; -webkit-text-stroke-width: 3px; } .tagline { font-size: 12px; }
+    .logo small { font-size: 22px; } .logo big { font-size: 40px; -webkit-text-stroke-width: 3px; } .tagline { display: none; }
     .tile { width: 92px; border-radius: 14px; } .tile b { font-size: 9px; }
-    .seg button { height: 44px; font-size: 13px; }
+    .seg { gap: 5px; }
+    .seg button { height: 42px; font-size: 12px; padding: 0 8px 0 6px; gap: 4px; border-radius: 15px; }
+    #segSize button { min-width: 40px; padding: 0 6px; }
   }
   @media (max-height: 520px) {
     /* a phone on its side: the menu a size smaller, the options in a row */
@@ -180,6 +182,14 @@
   .sortbtn kbd { width: 24px; height: 24px; border-radius: 7px; background: #fff; color: var(--ink); font: 400 13px/20px var(--display); text-align: center; border: 2px solid var(--ink); }
   @media (hover: none) and (pointer: coarse) { .sortbtn kbd { display: none; } }
   body[data-short="1"] .sortbtn { font-size: 12px; padding: 0 10px 0 6px; }
+  /* a tall screen: ⏸️ and 🔊 move down to the bottom strip, between 🖼️ and your brother, so the top bar has room */
+  body[data-shape="tall"] .bar { left: 6px; right: 6px; }
+  body[data-shape="tall"] #pauseBtn, body[data-shape="tall"] #muteBtn { top: auto; bottom: calc((var(--cb) - var(--ib)) / 2 + 3px); }
+  body[data-shape="tall"] #muteBtn { right: calc(var(--cb) * 0.94 + 22px); }
+  body[data-shape="tall"] #pauseBtn { right: calc(var(--cb) * 0.94 + 30px + var(--ib)); }
+  body[data-shape="tall"] .sortbtn { font-size: 13px; padding: 0 10px 0 6px; gap: 5px; }
+  body[data-shape="tall"] .sortbtn kbd { display: none; }
+  @media (max-width: 520px) { .side img { width: 36px; height: 36px; } .side b { font-size: 18px; } }
 
   /* your brother's button (1 player) / the high five (2 players): bottom right, big */
   .callbtn {

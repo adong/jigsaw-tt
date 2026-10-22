@@ -132,14 +132,14 @@
   // the menu's table: the demo puzzle on the left (wide) or above the menu (tall), pieces scattered round it
   function homeLayout(W, H) {
     const tall = W / H < 1.05;
-    const area = tall ? { x: BD.GUTTER, y: 8, w: W - BD.GUTTER - 8, h: H * 0.37 - 8 } : { x: BD.GUTTER, y: 0, w: W * 0.47 - BD.GUTTER, h: H };
+    const area = tall ? { x: BD.GUTTER, y: 8, w: W - BD.GUTTER - 8, h: H * 0.32 - 10 } : { x: BD.GUTTER, y: 0, w: W * 0.47 - BD.GUTTER, h: H };
     const cols = G.demo ? G.demo.P.cols : 4, rows = G.demo ? G.demo.P.rows : 3;
-    let bw = area.w * 0.66, bh = (bw * rows) / cols;
-    if (bh > area.h * (tall ? 0.7 : 0.52)) {
-      bh = area.h * (tall ? 0.7 : 0.52);
+    let bw = area.w * (tall ? 0.56 : 0.62), bh = (bw * rows) / cols;
+    if (bh > area.h * (tall ? 0.6 : 0.46)) {
+      bh = area.h * (tall ? 0.6 : 0.46);
       bw = (bh * cols) / rows;
     }
-    const by = tall ? area.y + (area.h - bh) / 2 : area.y + area.h * 0.42 - bh / 2;
+    const by = tall ? area.y + (area.h - bh) / 2 : area.y + area.h * 0.4 - bh / 2;
     return { tall, short: H < 470, top: 60, cb: 84, m: 8, W, H, area, board: { x: area.x + (area.w - bw) / 2, y: by, w: bw, h: bh, cell: bw / cols }, trays: [], slot: 40, body: bw / cols };
   }
 
@@ -878,20 +878,26 @@
     scatterDemo();
     showDemoKids();
   }
-  // the loose pieces lie round the board, never on it
+  // the loose pieces lie round the board, never on it and never on the boys
   function scatterDemo() {
-    const D = G.demo, L = G.L, A = L.area, b = L.board, cell = b.cell;
+    const D = G.demo, L = G.L, A = L.area, b = L.board, cell = b.cell, H = innerHeight;
     const r = RU.rng(D.P.seed);
+    const step = cell * 1.18, spots = [];
+    const kidH = H * 0.22, kidW = H * 0.09;
+    for (let y = A.y + step * 0.55; y < A.y + A.h - step * 0.5; y += step) {
+      for (let x = A.x + step * 0.55; x < A.x + A.w - step * 0.5; x += step) {
+        if (x > b.x - cell * 0.75 && x < b.x + b.w + cell * 0.75 && y > b.y - cell * 0.75 && y < b.y + b.h + cell * 0.75) continue;
+        if (!L.tall && y > H - kidH - cell * 0.5 && [0.2, 0.8].some((f) => Math.abs(x - (A.x + A.w * f)) < kidW + cell * 0.5)) continue;
+        spots.push({ x, y });
+      }
+    }
+    RU.shuffle(spots, r);
+    let i = 0;
     for (const v of G.pv) {
       if (v.mode !== 'tray') continue;
-      let x, y, tries = 0;
-      do {
-        x = A.x + cell * 0.6 + r() * (A.w - cell * 1.2);
-        y = A.y + cell * 0.6 + r() * (A.h * (L.tall ? 1 : 0.86) - cell * 1.2);
-        tries++;
-      } while (tries < 60 && x > b.x - cell * 0.7 && x < b.x + b.w + cell * 0.7 && y > b.y - cell * 0.7 && y < b.y + b.h + cell * 0.7);
-      v.x = x;
-      v.y = y;
+      const s = spots[i++ % Math.max(1, spots.length)] || { x: A.x + A.w / 2, y: A.y + cell };
+      v.x = s.x + (r() - 0.5) * cell * 0.2;
+      v.y = s.y + (r() - 0.5) * cell * 0.2;
       v.size = cell * 0.9;
       v.rot = (r() - 0.5) * 0.6;
     }
@@ -900,7 +906,7 @@
     hideActors();
     const L = G.L;
     if (L.tall) return;
-    const H = innerHeight, size = clamp((H * 0.24) / (2 * ST.U), 0.6, 1.3);
+    const H = innerHeight, size = clamp((H * 0.2) / (2 * ST.U), 0.5, 1.2);
     [['teddy', L.area.x + L.area.w * 0.2], ['tommy', L.area.x + L.area.w * 0.8]].forEach(([id, x]) => {
       const a = kids[id], p = ST.stageAt(x, H - 6);
       a.place(p.x, p.y, 0);
@@ -1062,6 +1068,7 @@
         scatterDemo();
         showDemoKids();
       }
+      step(0);
       return;
     }
     if (!G.P) return;
@@ -1079,6 +1086,7 @@
     BD.setPuzzle(G.P, G.img, G.level);
     for (const v of G.pv) if (v.mode === 'tray') snapToSlot(v);
     if (G.state === 'won' || (G.state === 'paused' && G.pausedFrom === 'won')) celebrate(G.winner);
+    step(0); // a new canvas size wipes it: draw straight away, even while the loop is held
   }
 
   // ---------------------------------------------------------------- boot

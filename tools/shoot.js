@@ -3,7 +3,7 @@
    node tools/shoot.js [steps.json] [outdir] [width height mobile]
    Defaults: tools/shots.json, docs/, 1280 x 800. Serve ~/claude-games first (the preview server on port 8839), or set
    URL=... Each step may have js (run in the page, using the window.game hooks), click [x, y] or clickAt (an
-   expression giving [x, y]) / keys / hold (real input, after the js),
+   expression giving [x, y]) / dragAt (an expression giving [x0, y0, x1, y1]) / keys / hold (real input, after the js),
    wait (ms) and shot (file name).
    From TT Dots & Boxes (by way of TT Spot the Difference). docs/screenshot.jpg: node tools/shoot.js tools/shots.json docs 1200 750 */
 'use strict';
@@ -66,6 +66,19 @@ const VK = { ArrowLeft: 37, ArrowUp: 38, ArrowRight: 39, ArrowDown: 40, Enter: 1
       }
       if (at) {
         for (const type of ['mousePressed', 'mouseReleased']) await send('Input.dispatchMouseEvent', { type, x: at[0], y: at[1], button: 'left', clickCount: 1 });
+      }
+      // a real mouse drag: dragAt is an expression in the page that gives [x0, y0, x1, y1]
+      if (s.dragAt) {
+        const r = await send('Runtime.evaluate', { expression: s.dragAt, returnByValue: true });
+        const [x0, y0, x1, y1] = r.result.result.value;
+        console.log((s.label || 'drag') + ' from', JSON.stringify([x0, y0, x1, y1].map(Math.round)));
+        await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: x0, y: y0, button: 'left', buttons: 1, clickCount: 1 });
+        for (let i = 1; i <= 12; i++) {
+          await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: x0 + ((x1 - x0) * i) / 12, y: y0 + ((y1 - y0) * i) / 12, button: 'left', buttons: 1 });
+          await sleep(25);
+        }
+        await sleep(250);
+        await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: x1, y: y1, button: 'left', buttons: 0, clickCount: 1 });
       }
       for (const key of s.keys || []) {
         const code = key.length === 1 ? 'Key' + key.toUpperCase() : key;

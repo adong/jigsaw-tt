@@ -12,6 +12,7 @@
   const RU = JG.rules;
 
   const PAD = 0.34; // room round a piece's square for its knobs (0.28 x 1.08) and outline, in pieces
+  const FRAME = 14; // the board's wooden frame, outside its picture
   const GUTTER = 58; // the kit's ? and A文 buttons live in this strip on the left
   const B = { cv: null, g: null, dpr: 1, W: 1, H: 1, L: null, P: null, img: null, level: null, sprites: [], layer: null, layerG: null, cellPx: 0, done: 0 };
 
@@ -41,8 +42,9 @@
     const cb = Math.round(Math.max(short ? 54 : 66, Math.min(Math.min(W, H) * 0.12, 104))); // the round buttons at the bottom
     const nMax = Math.max(1, ...o.piles);
     const best = { score: -1 };
+    const F = FRAME;
     if (!tall) {
-      const availW = W - GUTTER - 4 * m, maxH = H - top - 2 * m, th = H - top - cb - 3 * m;
+      const availW = W - GUTTER - 4 * m - 2 * F, maxH = H - top - 2 * m - 2 * F, th = H - top - cb - 3 * m;
       for (let f = 0.3; f <= 0.76; f += 0.02) {
         let bw = availW * f, bh = (bw * o.rows) / o.cols;
         if (bh > maxH) {
@@ -55,15 +57,15 @@
         const score = Math.min(cell, body * 1.7) + 0.12 * cell;
         if (score > best.score) Object.assign(best, { score, bw, bh, cell, tw, sl, body });
       }
-      const bx = GUTTER + 2 * m + best.tw, by = top + m + (H - top - 2 * m - best.bh) / 2;
+      const bx = GUTTER + 2 * m + best.tw + F, by = top + m + F + (H - top - 2 * m - 2 * F - best.bh) / 2;
       const tray = (x) => ({ x, y: top + m, w: best.tw, h: th });
-      return finish({ tall, short, top, cb, m, W, H, board: { x: bx, y: by, w: best.bw, h: best.bh, cell: best.cell }, trays: [tray(GUTTER + m), tray(bx + best.bw + m)] }, o);
+      return finish({ tall, short, top, cb, m, W, H, board: { x: bx, y: by, w: best.bw, h: best.bh, cell: best.cell }, trays: [tray(GUTTER + m), tray(bx + best.bw + F + m)] }, o);
     }
-    const availW = W - GUTTER - 2 * m, bot = cb + 2 * m, room = H - top - bot - 2 * m;
+    const availW = W - GUTTER - 2 * m, bot = cb + 2 * m, room = H - top - bot - 2 * m - 2 * F;
     for (let f = 0.32; f <= 0.7; f += 0.02) {
       let bh = room * f, bw = (bh * o.cols) / o.rows;
-      if (bw > availW) {
-        bw = availW;
+      if (bw > availW - 2 * F) {
+        bw = availW - 2 * F;
         bh = (bw * o.rows) / o.cols;
       }
       const cell = bw / o.cols, tw = (availW - m) / 2, th = room - bh - m;
@@ -72,8 +74,8 @@
       const score = Math.min(cell, body * 1.7) + 0.12 * cell;
       if (score > best.score) Object.assign(best, { score, bw, bh, cell, tw, th, sl, body });
     }
-    const bx = GUTTER + m + (availW - best.bw) / 2, by = top + m;
-    const ty = by + best.bh + m;
+    const bx = GUTTER + m + (availW - best.bw) / 2, by = top + m + F;
+    const ty = by + best.bh + F + m;
     const tray = (x) => ({ x, y: ty, w: best.tw, h: H - bot - ty });
     return finish({ tall, short, top, cb, m, W, H, board: { x: bx, y: by, w: best.bw, h: best.bh, cell: best.cell }, trays: [tray(GUTTER + m), tray(GUTTER + m + best.tw + m)] }, o);
   }
@@ -205,7 +207,7 @@
       g.stroke();
     });
     // the board: a wooden frame round a cream mat, the ghost picture on EASY
-    const fr = Math.max(6, Math.min(18, bd.cell * 0.16));
+    const fr = Math.max(6, Math.min(FRAME, bd.cell * 0.16));
     g.fillStyle = '#b8743a';
     Kit.gfx.roundRect(g, bd.x - fr, bd.y - fr, bd.w + 2 * fr, bd.h + 2 * fr, fr);
     g.fill();
