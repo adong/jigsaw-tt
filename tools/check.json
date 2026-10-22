@@ -1,0 +1,8 @@
+[
+  { "label": "muted", "js": "localStorage.setItem('claudeGames.muted', '1'); location.reload(); 'reload'", "wait": 4000 },
+  { "label": "check", "js": "game.hold(true); var r = game.check({ seeds: 8 }); JSON.stringify({ ok: r.ok, groups: r.groups, failures: r.failures, ms: r.ms })" },
+  { "label": "sabotage anywhere", "js": "var r = game.check({ seeds: 2, sizes: [6], sabotage: 'anywhere' }); JSON.stringify({ ok: r.ok, groups: r.groups, first: r.failures.slice(0, 2) })" },
+  { "label": "sabotage early", "js": "var r = game.check({ seeds: 2, sizes: [6], sabotage: 'early' }); JSON.stringify({ ok: r.ok, groups: r.groups, first: r.failures.slice(0, 2) })" },
+  { "label": "sabotage mismatch", "js": "var r = game.check({ seeds: 2, sizes: [6], sabotage: 'mismatch' }); JSON.stringify({ ok: r.ok, groups: r.groups, first: r.failures.slice(0, 2) })" },
+  { "label": "sabotage twin", "js": "var r = game.check({ seeds: 2, sizes: [6], sabotage: 'twin' }); JSON.stringify({ ok: r.ok, groups: r.groups, first: r.failures.slice(0, 2) })" }
+]

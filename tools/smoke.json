@@ -1,0 +1,5 @@
+[
+  { "label": "muted", "js": "localStorage.setItem('claudeGames.muted', '1'); location.reload(); 'reload'", "wait": 5000 },
+  { "label": "home", "js": "game.hold(true); game.step(3); JSON.stringify(game.info())", "shot": "s-home" },
+  { "label": "start", "js": "game.start({ scene: 'metro', n: 12, mode: 'race', level: 'easy', who: 'tommy', seed: 5 }); game.step(1); JSON.stringify(game.info().layout)", "shot": "s-play" }
+]
